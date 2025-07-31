@@ -14,23 +14,15 @@ func main() {
 	godotenv.Load()
 	port := ":" + os.Getenv("PORT")
 
-	paths := map[string]string{
-		"/urlshort-godoc": "https://godoc.org/github.com/gophercises/urlshort",
-		"/yaml-godoc":     "https://godoc.org/gopkg.in/yaml.v2",
+	yaml, err := os.ReadFile("./paths.yaml")
+	if err != nil {
+		fmt.Printf("error opening file: %v\n", err)
 	}
 
-	yaml := `
-- path: /urlshort
-  url: https://github.com/gophercises/urlshort
-- path: /urlshort-final
-  url: https://github.com/gophercises/urlshort/tree/solution
-`
-
 	mux.HandleFunc("/", hello)
-	mapHandler := MapHandler(paths, mux)
-	yamlHandler, err := YAMLHandler([]byte(yaml), mapHandler)
+	yamlHandler, err := YAMLHandler(yaml, mux)
 	if err != nil {
-		fmt.Printf("error handling yaml: %v", err)
+		fmt.Printf("error handling yaml: %v\n", err)
 	}
 
 	fmt.Printf("Starting the sever on: %s\n", port)
