@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,7 +15,10 @@ func main() {
 	godotenv.Load()
 	port := ":" + os.Getenv("PORT")
 
-	yaml, err := os.ReadFile("./paths.yaml")
+	yamlFile := flag.String("yaml", "./paths.yaml", "a yaml file with a list of 'path:', 'url:' items")
+	flag.Parse()
+
+	yaml, err := os.ReadFile(*yamlFile)
 	if err != nil {
 		fmt.Printf("error opening file: %v\n", err)
 	}
